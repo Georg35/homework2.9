@@ -8,6 +8,13 @@ public class Employee {
     private double salary;
     private int department;
 
+    public Employee(String firstName, String lastName, double salary, int department) {
+        this.firstName = firstName;
+        this.lastName = lastName;
+        this.salary = salary;
+        this.department = department;
+    }
+
     @Override
     public String toString() {
         return "Employee{" +
