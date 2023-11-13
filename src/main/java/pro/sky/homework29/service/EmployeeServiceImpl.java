@@ -3,12 +3,15 @@ package pro.sky.homework29.service;
 import org.springframework.stereotype.Service;
 import pro.sky.homework29.exception.EmployeeAlreadyAddedException;
 import pro.sky.homework29.exception.EmployeeNotFoundException;
+import pro.sky.homework29.exception.InvalidInputException;
 import pro.sky.homework29.model.Employee;
 
 import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
+
+import static org.apache.commons.lang3.StringUtils.isAlpha;
 
 @Service
 public class EmployeeServiceImpl implements EmployeeService {
@@ -65,6 +68,10 @@ public class EmployeeServiceImpl implements EmployeeService {
     @Override
 
     public Employee add(String firstName, String lastName, double salary, int deparment) {
+
+        if (!validateInput(firstName, lastName)) {
+            throw new InvalidInputException();
+        }
         Employee employee = new Employee(firstName, lastName, salary, deparment);
         String s = firstName + lastName;
         if (employeeMap.containsKey(s)) {
@@ -78,6 +85,10 @@ public class EmployeeServiceImpl implements EmployeeService {
 
     public Employee remove(String firstName, String lastName) {
 
+        if (!validateInput(firstName, lastName)) {
+            throw new InvalidInputException();
+        }
+
         String s = firstName + lastName;
         if (employeeMap.containsKey(s)) {
             employeeMap.remove(s);
@@ -90,6 +101,10 @@ public class EmployeeServiceImpl implements EmployeeService {
     @Override
 
     public Employee find(String firstName, String lastName) {
+
+        if (!validateInput(firstName, lastName)) {
+            throw new InvalidInputException();
+        }
         String s = firstName + lastName;
         if (employeeMap.containsKey(s)) {
             return employeeMap.get(s);
@@ -100,5 +115,9 @@ public class EmployeeServiceImpl implements EmployeeService {
     @Override
     public Map<String, Employee> findAll() {
         return employeeMap;
+    }
+
+    private boolean validateInput(String firstName, String lastName) {
+        return isAlpha(firstName) && isAlpha(lastName);
     }
 }
