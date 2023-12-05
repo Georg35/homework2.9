@@ -1,10 +1,6 @@
 package pro.sky.homework29.controller;
 
-import org.springframework.web.bind.annotation.GetMapping;
-import org.springframework.web.bind.annotation.RequestMapping;
-import org.springframework.web.bind.annotation.RequestParam;
-import org.springframework.web.bind.annotation.RestController;
-import pro.sky.homework29.exception.EmployeeNotFoundException;
+import org.springframework.web.bind.annotation.*;
 import pro.sky.homework29.model.Employee;
 import pro.sky.homework29.service.DepartmentService;
 
@@ -20,24 +16,29 @@ public class DepartmentController {
         this.service = service;
     }
 
-    @GetMapping("/max-salary")
-    public Employee findEmployeeMaxSalaryInDepartment(@RequestParam int dep) {
+    @GetMapping("/{id}/max-salary")
+    public Employee findEmployeeMaxSalaryInDepartment(@PathVariable("id") int dep) {
         return service.findEmployeeMaxSalaryInDepartment(dep);
     }
 
-    @GetMapping("/min-salary")
-    public Employee findEmployeeMinSalaryInDepartment(@RequestParam int dep) {
-        return service.findEmployeeMinSalaryInDepartment(dep).orElseThrow(EmployeeNotFoundException::new);
+    @GetMapping("/{id}/min-salary")
+    public Employee findEmployeeMinSalaryInDepartment(@PathVariable("id") int dep) {
+        return service.findEmployeeMinSalaryInDepartment(dep);
     }
 
-    @GetMapping(value = "/all",params = "department")
-    public List<Employee> findAllDepartment(@RequestParam("department") int dep) {
+    @GetMapping(value = "/{id}/all",params = "department")
+    public List<Employee> findAllDepartment(@PathVariable("id") int dep) {
         return service.findAllDepartment(dep);
     }
 
     @GetMapping("/all")
     public Map<Integer, List<Employee>> findAllDepartmentAll() {
         return service.findAllDepartmentAll();
+    }
+
+    @GetMapping("/{id}/salary/sum")
+    public Double sumSalaryDepartment(@PathVariable("id") int dep) {
+        return service.sumSalary(dep);
     }
 }
 

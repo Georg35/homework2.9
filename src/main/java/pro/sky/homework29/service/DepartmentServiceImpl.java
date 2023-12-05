@@ -11,12 +11,12 @@ import java.util.stream.Collectors;
 
 @Service
 public class DepartmentServiceImpl implements DepartmentService {
-    private final EmployeeServiceImpl employeeService;
-    private Map<String, Employee> employeeMap;
+    private final EmployeeService employeeService;
+   // private Map<String, Employee> employeeMap;
 
     public DepartmentServiceImpl(EmployeeServiceImpl employeeService, Map<String, Employee> employeeMap) {
         this.employeeService = employeeService;
-        this.employeeMap = employeeMap;
+
     }
 
 
@@ -24,7 +24,7 @@ public class DepartmentServiceImpl implements DepartmentService {
 
     public Employee findEmployeeMaxSalaryInDepartment(int depart) {
 
-        return  employeeService.createList(employeeService.employeeMap).stream()
+        return  employeeService.createList().stream()
                 .filter(e -> e.getDepartment() == depart)
                 .max(Comparator.comparingDouble(employee -> employee.getSalary()))
                 .orElseThrow(EmployeeNotFoundException::new);
@@ -35,14 +35,12 @@ public class DepartmentServiceImpl implements DepartmentService {
 
     @Override
 
-    public Optional<Employee> findEmployeeMinSalaryInDepartment(int depart) {
-        java.util.Optional<Employee> employee1 =
-                employeeService.createList(employeeService.employeeMap).stream()
+    public Employee findEmployeeMinSalaryInDepartment(int depart) {
+
+            return employeeService.createList().stream()
                         .filter(e -> e.getDepartment() == depart)
-                        .min(Comparator.comparingDouble(Employee::getSalary));
-
-
-        return employee1;
+                        .min(Comparator.comparingDouble(employee -> employee.getSalary()))
+                        .orElseThrow(EmployeeNotFoundException::new);
 
 
     }
@@ -50,7 +48,7 @@ public class DepartmentServiceImpl implements DepartmentService {
     @Override
     public List<Employee> findAllDepartment(int depart) {
         final List<Employee> departmentEmployees =
-                employeeService.createList(employeeService.employeeMap).stream()
+                employeeService.createList().stream()
                         .filter(e -> e.getDepartment() == depart)
                         .collect(Collectors.toList());
         if (departmentEmployees.isEmpty()) {
@@ -63,10 +61,17 @@ public class DepartmentServiceImpl implements DepartmentService {
     @Override
     public Map<Integer, List<Employee>> findAllDepartmentAll() {
         final Map<Integer, List<Employee>> employees =
-                employeeService.createList(employeeService.employeeMap).stream()
+                employeeService.createList().stream()
                         .collect(Collectors.groupingBy(e -> e.getDepartment()));
 
         return employees;
+    }
+
+    @Override
+    public Double sumSalary(int depart) {
+        return employeeService.createList().stream()
+                .filter(e -> e.getDepartment() == depart)
+                .mapToDouble(Employee::getSalary).sum();
 
     }
 

@@ -2,8 +2,8 @@ package pro.sky.homework29.service;
 
 import org.springframework.stereotype.Service;
 import pro.sky.homework29.exception.EmployeeAlreadyAddedException;
+import pro.sky.homework29.exception.EmployeeIllegalNameOrLastNameException;
 import pro.sky.homework29.exception.EmployeeNotFoundException;
-import pro.sky.homework29.exception.InvalidInputException;
 import pro.sky.homework29.model.Employee;
 
 import java.util.ArrayList;
@@ -15,7 +15,8 @@ import static org.apache.commons.lang3.StringUtils.isAlpha;
 
 @Service
 public class EmployeeServiceImpl implements EmployeeService {
-    Map<String, Employee> employeeMap = new HashMap<>(Map.of(
+
+    private final Map<String, Employee> employeeMap = new HashMap<>(Map.of(
             "ИванИванов",
             new Employee(
 
@@ -56,38 +57,37 @@ public class EmployeeServiceImpl implements EmployeeService {
 
     @Override
 
-    public List<Employee> createList(Map<String, Employee> emplMap) {
-        final List<Employee> employees = new ArrayList<>();
-        for (Employee employee : employeeMap.values()) {
-            employees.add(employee);
-        }
+    public List<Employee> createList() {
+        final List<Employee> employees = new ArrayList<>(employeeMap.values());
         return employees;
     }
 
 
     @Override
 
-    public Employee add(String firstName, String lastName, double salary, int deparment) {
+    public Employee add(String firstName, String lastName, double salary, int department) {
 
-        if (!validateInput(firstName, lastName)) {
-            throw new InvalidInputException();
+        if (isAlpha(firstName) && isAlpha(lastName)) {
+
+            Employee emp = new Employee(firstName, lastName, salary, department);
+            String s = firstName + lastName;
+            if (!employeeMap.containsKey(s)) {
+                employeeMap.put(s, emp);
+                return emp;
+
+            } else {
+                throw new EmployeeAlreadyAddedException("Такой сотрудник уже есть");
+            }
+
+        } else {
+            throw new EmployeeIllegalNameOrLastNameException("Некорректное имя или фамилия");
+
         }
-        Employee employee = new Employee(firstName, lastName, salary, deparment);
-        String s = firstName + lastName;
-        if (employeeMap.containsKey(s)) {
-            throw new EmployeeAlreadyAddedException();
-        }
-        employeeMap.put(s, employee);
-        return employee;
     }
 
     @Override
 
     public Employee remove(String firstName, String lastName) {
-
-        if (!validateInput(firstName, lastName)) {
-            throw new InvalidInputException();
-        }
 
         String s = firstName + lastName;
         if (employeeMap.containsKey(s)) {
@@ -101,10 +101,6 @@ public class EmployeeServiceImpl implements EmployeeService {
     @Override
 
     public Employee find(String firstName, String lastName) {
-
-        if (!validateInput(firstName, lastName)) {
-            throw new InvalidInputException();
-        }
         String s = firstName + lastName;
         if (employeeMap.containsKey(s)) {
             return employeeMap.get(s);
@@ -117,7 +113,5 @@ public class EmployeeServiceImpl implements EmployeeService {
         return employeeMap;
     }
 
-    private boolean validateInput(String firstName, String lastName) {
-        return isAlpha(firstName) && isAlpha(lastName);
-    }
+
 }
