@@ -21,8 +21,8 @@ public class EmployeeAlreadyAddedException extends RuntimeException {
         super(cause);
     }
 
-    public EmployeeAlreadyAddedException(String message, Throwable cause,
-     boolean enableSuppression, boolean writableStickTrace) {
-        super(message, cause, enableSuppression, writableStickTrace);
+    public EmployeeAlreadyAddedException(String message, Throwable cause, boolean enableSuppression, boolean writableStackTrace) {
+        super(message, cause, enableSuppression, writableStackTrace);
     }
 }
+

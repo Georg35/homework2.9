@@ -2,11 +2,20 @@ package pro.sky.homework29.model;
 
 import java.util.Objects;
 
+import static org.apache.commons.lang3.StringUtils.capitalize;
+
 public class Employee {
     private final String firstName;
     private final String lastName;
     private double salary;
     private int department;
+
+    public Employee(String firstName, String lastName, double salary, int department) {
+        this.firstName = capitalize(firstName.toLowerCase());
+        this.lastName = capitalize(lastName.toLowerCase());
+        this.salary = salary;
+        this.department = department;
+    }
 
     @Override
     public String toString() {
@@ -19,10 +28,10 @@ public class Employee {
     }
 
     @Override
-    public boolean equals(Object object) {
-        if (this == object) return true;
-        if (object == null || getClass() != object.getClass()) return false;
-        Employee employee = (Employee) object;
+    public boolean equals(Object o) {
+        if (this == o) return true;
+        if (o == null || getClass() != o.getClass()) return false;
+        Employee employee = (Employee) o;
         return Double.compare(salary, employee.salary) == 0 && department == employee.department && Objects.equals(firstName, employee.firstName) && Objects.equals(lastName, employee.lastName);
     }
 
